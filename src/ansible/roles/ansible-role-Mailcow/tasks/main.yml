@@ -1,0 +1,43 @@
+---
+# tasks file for try
+- name: Install a list of packages
+  ansible.builtin.apt:
+    pkg:
+    - sudo
+    - fail2ban
+    - ufw
+  become: true
+
+# - name: Allow incoming access to eth0 from 1.2.3.5 port 5469 to 1.2.3.4 port 5469
+#   community.general.ufw:
+#     rule: deny
+# #    interface: "{{ ansible_default_ipv4.interface }}"
+#     direction: in
+#   become: true
+
+- name: Deny incoming
+  community.general.ufw:
+    default: deny
+    direction: incoming
+    interface: "{{ ansible_default_ipv4.interface }}"
+  become: true
+
+- name: Allow outgoing
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+    interface: "{{ ansible_default_ipv4.interface }}"
+  become: true
+
+- name: Allow ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  become: true
+  loop: [22, 25, 80, 110, 143, 443, 465, 587, 993, 995, 4190]
+
+- name: enable UFW
+  community.general.ufw:
+    state: enabled
+  become: true

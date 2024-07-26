@@ -1,0 +1,4 @@
+- hosts: debian #node
+  roles:
+  - ansible-role-Mailcow
+
